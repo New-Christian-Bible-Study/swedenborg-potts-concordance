@@ -1,0 +1,208 @@
+{
+ "slices": [
+  {
+   "comment_block": {
+    "comment_block": "# Potts, letter X\n\n"
+   },
+   "articles": [
+    {
+     "id": 5,
+     "header": {
+      "pp_line_and_footnotes": [
+       {
+        "comment": null,
+        "pp_line": {
+         "pp_pair": {
+          "ppes": [
+           "Xavier"
+          ],
+          "ppls": [
+           "Xavier"
+          ]
+         },
+         "pp_text": null,
+         "asterisk": null
+        },
+        "footnote": null
+       }
+      ],
+      "header_sentence_lines": []
+     },
+     "contexts": {
+      "contexts": [
+       {
+        "comment": null,
+        "ref_quote_separator": {
+         "separator": ". "
+        },
+        "ref": {
+         "work": "LJCont",
+         "section": "65",
+         "subsection": null,
+         "explicated": null
+        },
+        "quotation": {
+         "elements": [
+          {
+           "str": "I spoke with one who was said to be Xavier. (His lot.)"
+          }
+         ]
+        },
+        "footnote": null
+       },
+       {
+        "comment": null,
+        "ref_quote_separator": {
+         "separator": ". "
+        },
+        "ref": {
+         "work": "DMin",
+         "section": "4570",
+         "subsection": null,
+         "explicated": null
+        },
+        "quotation": {
+         "elements": [
+          {
+           "str": "Francis Xavier, the second father of the Jesuits, appeared deep under the buttocks. He was a still more subtle magician (than Anthony), operating profanely through conjugial love and innocence... Perhaps it is another. "
+          },
+          {
+           "work": "",
+           "section": "4603",
+           "subsection": {
+            "str": "end"
+           },
+           "explicated": {
+            "work": "DMin",
+            "section": "4603",
+            "subsection": {
+             "str": "end"
+            },
+            "explicated": null
+           }
+          },
+          {
+           "str": ". "
+          },
+          {
+           "work": "LJPost",
+           "section": "67",
+           "subsection": null,
+           "explicated": null
+          },
+          {
+           "str": "."
+          }
+         ]
+        },
+        "footnote": null
+       }
+      ]
+     },
+     "redirect_xref": null,
+     "url": "concordance-xavier-ppl-xavier"
+    },
+    {
+     "id": 35,
+     "header": {
+      "pp_line_and_footnotes": [
+       {
+        "comment": null,
+        "pp_line": {
+         "pp_pair": {
+          "ppes": [
+           "Xenophon"
+          ],
+          "ppls": [
+           "Xenophon"
+          ]
+         },
+         "pp_text": null,
+         "asterisk": null
+        },
+        "footnote": null
+       }
+      ],
+      "header_sentence_lines": []
+     },
+     "contexts": {
+      "contexts": [
+       {
+        "comment": null,
+        "ref_quote_separator": {
+         "separator": ". "
+        },
+        "ref": {
+         "work": "CL",
+         "section": "156",
+         "subsection": null,
+         "explicated": null
+        },
+        "quotation": {
+         "elements": [
+          {
+           "str": "[151a]. In and around (the Athens there) dwell the ancient wise ones of Greece, as Xenophon, etc."
+          }
+         ]
+        },
+        "footnote": null
+       }
+      ]
+     },
+     "redirect_xref": null,
+     "url": "concordance-xenophon-ppl-xenophon"
+    },
+    {
+     "id": 52,
+     "header": {
+      "pp_line_and_footnotes": [
+       {
+        "comment": null,
+        "pp_line": {
+         "pp_pair": {
+          "ppes": [
+           "Xiphoid"
+          ],
+          "ppls": [
+           "Xiphoid"
+          ]
+         },
+         "pp_text": null,
+         "asterisk": null
+        },
+        "footnote": null
+       }
+      ],
+      "header_sentence_lines": []
+     },
+     "contexts": {
+      "contexts": [
+       {
+        "comment": null,
+        "ref_quote_separator": {
+         "separator": ". "
+        },
+        "ref": {
+         "work": "AC",
+         "section": "9236",
+         "subsection": null,
+         "explicated": null
+        },
+        "quotation": {
+         "elements": [
+          {
+           "str": "The inhabitants of the moon... relate to the scutiform or Xiphoid cartilage, to which the ribs are joined in front..."
+          }
+         ]
+        },
+        "footnote": null
+       }
+      ]
+     },
+     "redirect_xref": null,
+     "url": "concordance-xiphoid-ppl-xiphoid"
+    }
+   ]
+  }
+ ]
+}

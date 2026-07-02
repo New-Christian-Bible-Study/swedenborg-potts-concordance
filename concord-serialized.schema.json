@@ -1,0 +1,655 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "concord-serialized.schema.json",
+  "title": "Potts Concordance Serialized JSON",
+  "description": "Schema for serialized concordance slice files. Terminology follows docs/grammar.md: entries (articles), principal phrases (ppes/ppls), contexts (quotes with Swedenborg references). Does not use jsonpickle py/object or py/id keys; shared objects use explicit id fields and { id } back-references.",
+  "type": "object",
+  "required": ["slices"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to the JSON schema for this file"
+    },
+    "slices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/slice"
+      }
+    }
+  },
+  "$defs": {
+    "idRef": {
+      "type": "object",
+      "description": "Back-reference to an object defined elsewhere in the file by its id.",
+      "required": ["id"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "integerOrString": {
+      "oneOf": [
+        { "type": "integer" },
+        { "type": "string" }
+      ]
+    },
+    "nullableComment": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/comment" }
+      ]
+    },
+    "nullableFootnote": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/footnote" }
+      ]
+    },
+    "nullablePpText": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/ppText" }
+      ]
+    },
+    "nullableAsteriskMarker": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/asteriskMarker" }
+      ]
+    },
+    "comment": {
+      "type": "object",
+      "description": "Editor comment (lines beginning with # in the source text).",
+      "required": ["comment"],
+      "additionalProperties": false,
+      "properties": {
+        "comment": {
+          "type": "string"
+        }
+      }
+    },
+    "commentBlock": {
+      "type": "object",
+      "description": "Comment block at the start of a concordance slice.",
+      "required": ["comment_block"],
+      "additionalProperties": false,
+      "properties": {
+        "comment_block": {
+          "type": "string"
+        }
+      }
+    },
+    "str": {
+      "type": "object",
+      "description": "Plain text fragment. Also covers emphasized (italic) text, which is structurally identical after type tags are removed.",
+      "required": ["str"],
+      "additionalProperties": false,
+      "properties": {
+        "str": {
+          "type": "string"
+        }
+      }
+    },
+    "asteriskMarker": {
+      "type": "object",
+      "description": "Footnote marker (*) on a principal phrase line.",
+      "additionalProperties": false,
+      "properties": {}
+    },
+    "idem": {
+      "type": "object",
+      "description": "Shorthand for (idem), meaning same as the previous reference.",
+      "additionalProperties": false,
+      "properties": {}
+    },
+    "inlineAsteriskOrIdem": {
+      "type": "object",
+      "description": "Empty object representing an asterisk footnote marker or (idem) shorthand in running text.",
+      "additionalProperties": false,
+      "properties": {}
+    },
+    "latinInjections": {
+      "type": "object",
+      "description": "Latin word(s) injected into a quoted English passage.",
+      "required": ["injection1"],
+      "additionalProperties": false,
+      "properties": {
+        "injection1": {
+          "type": "string"
+        },
+        "injection2": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string" }
+          ]
+        }
+      }
+    },
+    "workSubsectionOrFootnote": {
+      "type": "object",
+      "description": "Bracketed subsection (e.g. @AC 10492[2], @--[e]) or parenthesized footnote within a Swedenborg work reference.",
+      "required": ["str"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "str": {
+          "type": "string"
+        }
+      }
+    },
+    "subsectionOrFootnote": {
+      "oneOf": [
+        { "$ref": "#/$defs/idRef" },
+        { "$ref": "#/$defs/workSubsectionOrFootnote" }
+      ]
+    },
+    "nullableSubsectionOrFootnote": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/subsectionOrFootnote" }
+      ]
+    },
+    "ref": {
+      "type": "object",
+      "description": "Reference to a section or subsection of a work by Swedenborg. work and section may be empty strings for shorthand forms (@5386, @--[5]) with explicated holding the full reference.",
+      "required": ["work", "section", "subsection", "explicated"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "work": {
+          "type": "string",
+          "description": "Work abbreviation (e.g. AC, AE, HH) or empty string for shorthand."
+        },
+        "section": {
+          "type": "string",
+          "description": "Section number, range (e.g. 5663-5669), or empty string for shorthand."
+        },
+        "subsection": {
+          "$ref": "#/$defs/nullableSubsectionOrFootnote"
+        },
+        "explicated": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/idRef" },
+            { "$ref": "#/$defs/ref" }
+          ]
+        }
+      }
+    },
+    "ppesPpls": {
+      "type": "object",
+      "description": "Principal phrase pair: English principal phrases (ppes) paired with Latin principal phrases (ppls).",
+      "required": ["ppes", "ppls"],
+      "additionalProperties": false,
+      "properties": {
+        "ppes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ppls": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "xref": {
+      "type": "object",
+      "description": "Cross-reference to another entry's principal phrase pair (See <English-Latin>).",
+      "required": ["pp_pair", "url", "is_ambiguous"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "pp_pair": {
+          "$ref": "#/$defs/ppesPpls"
+        },
+        "url": {
+          "type": "string"
+        },
+        "is_ambiguous": {
+          "type": "boolean"
+        }
+      }
+    },
+    "nullableXrefOrIdRef": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/idRef" },
+        { "$ref": "#/$defs/xref" }
+      ]
+    },
+    "bibleVersesConsecutive": {
+      "type": "object",
+      "required": ["verse_start", "verse_end"],
+      "additionalProperties": false,
+      "properties": {
+        "verse_start": {
+          "$ref": "#/$defs/integerOrString"
+        },
+        "verse_end": {
+          "$ref": "#/$defs/integerOrString"
+        }
+      }
+    },
+    "bibleBookVerses": {
+      "type": "object",
+      "required": ["chapter", "verses_consecutive_list"],
+      "additionalProperties": false,
+      "properties": {
+        "chapter": {
+          "$ref": "#/$defs/integerOrString"
+        },
+        "verses_consecutive_list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bibleVersesConsecutive"
+          }
+        }
+      }
+    },
+    "bibleVersesRange": {
+      "type": "object",
+      "required": ["bible_book_verses"],
+      "additionalProperties": false,
+      "properties": {
+        "bible_book_verses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bibleBookVerses"
+          }
+        }
+      }
+    },
+    "bibleBookChapterRange": {
+      "type": "object",
+      "required": ["chapter_start", "chapter_end"],
+      "additionalProperties": false,
+      "properties": {
+        "chapter_start": {
+          "$ref": "#/$defs/integerOrString"
+        },
+        "chapter_end": {
+          "$ref": "#/$defs/integerOrString"
+        }
+      }
+    },
+    "bibleBookChapter": {
+      "type": "object",
+      "required": ["book", "chapter_range"],
+      "additionalProperties": false,
+      "properties": {
+        "book": {
+          "type": "string"
+        },
+        "chapter_range": {
+          "$ref": "#/$defs/bibleBookChapterRange"
+        }
+      }
+    },
+    "bibleRef": {
+      "type": "object",
+      "description": "Reference to a single Bible verse.",
+      "required": ["book", "chapter", "verse"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "book": {
+          "type": "string"
+        },
+        "chapter": {
+          "$ref": "#/$defs/integerOrString"
+        },
+        "verse": {
+          "$ref": "#/$defs/integerOrString"
+        }
+      }
+    },
+    "bibleRefWithRange": {
+      "type": "object",
+      "description": "Reference to one or more Bible verses spanning chapters.",
+      "required": ["book", "bible_verses_range"],
+      "additionalProperties": false,
+      "properties": {
+        "book": {
+          "type": "string"
+        },
+        "bible_verses_range": {
+          "$ref": "#/$defs/bibleVersesRange"
+        }
+      }
+    },
+    "bibleVerseAbbrev": {
+      "type": "object",
+      "description": "Shorthand Bible verse reference (verse number only) with optional explicated full reference.",
+      "required": ["verse"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "verse": {
+          "$ref": "#/$defs/integerOrString"
+        },
+        "explicated": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/idRef" },
+            { "$ref": "#/$defs/bibleRef" }
+          ]
+        }
+      }
+    },
+    "inlineContainer": {
+      "type": "object",
+      "description": "Quoted passage or nested text block. Structurally identical to Text after type tags are removed.",
+      "required": ["elements"],
+      "additionalProperties": false,
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/inlineElement"
+          }
+        }
+      }
+    },
+    "inlineElement": {
+      "oneOf": [
+        { "$ref": "#/$defs/idRef" },
+        { "$ref": "#/$defs/latinInjections" },
+        { "$ref": "#/$defs/bibleRefWithRange" },
+        { "$ref": "#/$defs/bibleBookChapter" },
+        { "$ref": "#/$defs/bibleRef" },
+        { "$ref": "#/$defs/bibleVerseAbbrev" },
+        { "$ref": "#/$defs/ref" },
+        { "$ref": "#/$defs/xref" },
+        { "$ref": "#/$defs/inlineContainer" },
+        { "$ref": "#/$defs/inlineAsteriskOrIdem" },
+        { "$ref": "#/$defs/str" }
+      ]
+    },
+    "text": {
+      "type": "object",
+      "description": "Sequence of inline text elements forming a quotation or note.",
+      "required": ["elements"],
+      "additionalProperties": false,
+      "properties": {
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/inlineElement"
+          }
+        }
+      }
+    },
+    "ppTextStartSee": {
+      "type": "object",
+      "description": "See or Under prefix starting a principal phrase note line.",
+      "required": ["see"],
+      "additionalProperties": false,
+      "properties": {
+        "see": {
+          "type": "string",
+          "examples": ["See ", "Under "]
+        }
+      }
+    },
+    "ppTextStartRefOrSee": {
+      "oneOf": [
+        { "$ref": "#/$defs/idRef" },
+        { "$ref": "#/$defs/ref" },
+        { "$ref": "#/$defs/ppTextStartSee" }
+      ]
+    },
+    "ppTextStart": {
+      "type": "object",
+      "required": ["ref_or_see"],
+      "additionalProperties": false,
+      "properties": {
+        "ref_or_see": {
+          "$ref": "#/$defs/ppTextStartRefOrSee"
+        }
+      }
+    },
+    "ppTextTailElement": {
+      "oneOf": [
+        { "$ref": "#/$defs/idRef" },
+        { "$ref": "#/$defs/latinInjections" },
+        { "$ref": "#/$defs/bibleRefWithRange" },
+        { "$ref": "#/$defs/bibleBookChapter" },
+        { "$ref": "#/$defs/bibleRef" },
+        { "$ref": "#/$defs/bibleVerseAbbrev" },
+        { "$ref": "#/$defs/ref" },
+        { "$ref": "#/$defs/xref" },
+        { "$ref": "#/$defs/inlineContainer" },
+        { "$ref": "#/$defs/inlineAsteriskOrIdem" },
+        { "$ref": "#/$defs/str" }
+      ]
+    },
+    "ppText": {
+      "type": "object",
+      "description": "Supplemental text following a principal phrase (reference note or See line).",
+      "required": ["pp_text"],
+      "additionalProperties": false,
+      "properties": {
+        "pp_text": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/ppTextStart" },
+              { "$ref": "#/$defs/ppTextTailElement" }
+            ]
+          }
+        }
+      }
+    },
+    "ppePplLine": {
+      "type": "object",
+      "description": "Principal phrase line with English and Latin principal phrases.",
+      "required": ["pp_pair", "pp_text", "asterisk"],
+      "additionalProperties": false,
+      "properties": {
+        "pp_pair": {
+          "$ref": "#/$defs/ppesPpls"
+        },
+        "pp_text": {
+          "$ref": "#/$defs/nullablePpText"
+        },
+        "asterisk": {
+          "$ref": "#/$defs/nullableAsteriskMarker"
+        }
+      }
+    },
+    "ppeLine": {
+      "type": "object",
+      "description": "Principal phrase line with English phrases only (no Latin).",
+      "required": ["pp_pair"],
+      "additionalProperties": false,
+      "properties": {
+        "pp_pair": {
+          "$ref": "#/$defs/ppesPpls"
+        }
+      }
+    },
+    "ppLine": {
+      "oneOf": [
+        { "$ref": "#/$defs/ppePplLine" },
+        { "$ref": "#/$defs/ppeLine" }
+      ]
+    },
+    "footnote": {
+      "type": "object",
+      "description": "Footnote attached to a principal phrase line or context.",
+      "required": ["note"],
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "ppLineAndFootnote": {
+      "type": "object",
+      "description": "A principal phrase line with optional editor comment and footnote.",
+      "required": ["comment", "pp_line", "footnote"],
+      "additionalProperties": false,
+      "properties": {
+        "comment": {
+          "$ref": "#/$defs/nullableComment"
+        },
+        "pp_line": {
+          "$ref": "#/$defs/ppLine"
+        },
+        "footnote": {
+          "$ref": "#/$defs/nullableFootnote"
+        }
+      }
+    },
+    "headerSentenceLine": {
+      "type": "object",
+      "description": "Related-entry line in the article header (See, See also, See under).",
+      "required": ["comment", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "comment": {
+          "$ref": "#/$defs/nullableComment"
+        },
+        "text": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "header": {
+      "type": "object",
+      "description": "Article header containing principal phrases and related-entry lines.",
+      "required": ["pp_line_and_footnotes", "header_sentence_lines"],
+      "additionalProperties": false,
+      "properties": {
+        "pp_line_and_footnotes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ppLineAndFootnote"
+          }
+        },
+        "header_sentence_lines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/headerSentenceLine"
+          }
+        }
+      }
+    },
+    "refQuoteSeparator": {
+      "type": "object",
+      "description": "Separator between the Swedenborg reference and the quotation text.",
+      "required": ["separator"],
+      "additionalProperties": false,
+      "properties": {
+        "separator": {
+          "type": "string",
+          "examples": [". "]
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "description": "A context (quote): a Swedenborg work reference followed by the quotation and optional supplemental text.",
+      "required": ["comment", "ref_quote_separator", "ref", "quotation", "footnote"],
+      "additionalProperties": false,
+      "properties": {
+        "comment": {
+          "$ref": "#/$defs/nullableComment"
+        },
+        "ref_quote_separator": {
+          "$ref": "#/$defs/refQuoteSeparator"
+        },
+        "ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "quotation": {
+          "$ref": "#/$defs/text"
+        },
+        "footnote": {
+          "$ref": "#/$defs/nullableFootnote"
+        }
+      }
+    },
+    "contexts": {
+      "type": "object",
+      "description": "Wrapper for the list of contexts (quotes) in an entry.",
+      "required": ["contexts"],
+      "additionalProperties": false,
+      "properties": {
+        "contexts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/context"
+          }
+        }
+      }
+    },
+    "article": {
+      "type": "object",
+      "description": "A concordance entry (article) grouping related principal phrases and their example contexts.",
+      "required": ["id", "header", "contexts", "redirect_xref", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Unique identifier for this entry within the slice file."
+        },
+        "header": {
+          "$ref": "#/$defs/header"
+        },
+        "contexts": {
+          "$ref": "#/$defs/contexts"
+        },
+        "redirect_xref": {
+          "$ref": "#/$defs/nullableXrefOrIdRef",
+          "description": "When the entry is a redirect (See <other entry>), points to the target cross-reference."
+        },
+        "url": {
+          "type": "string",
+          "description": "URL slug uniquely identifying this entry.",
+          "examples": ["concordance-aaron"]
+        }
+      }
+    },
+    "slice": {
+      "type": "object",
+      "description": "A slice of the concordance (typically one letter-range file).",
+      "required": ["comment_block", "articles"],
+      "additionalProperties": false,
+      "properties": {
+        "comment_block": {
+          "$ref": "#/$defs/commentBlock"
+        },
+        "articles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/article"
+          }
+        }
+      }
+    }
+  }
+}
